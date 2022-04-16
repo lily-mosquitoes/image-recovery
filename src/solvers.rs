@@ -4,6 +4,9 @@ use crate::{
     utils,
 };
 
+// J Math Imaging Vis (2011) 40: 120–145
+// DOI 10.1007/s10851-010-0251-1
+
 // lambda => the target value of the dual objective function,
 // i.e. how close you want to be to the original matrix (image):
 // 0 == completely flat; INFINITY == same as original.
