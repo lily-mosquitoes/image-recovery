@@ -30,8 +30,7 @@ pub fn denoise(input: &Array2<f64>, lambda: f64, mut tau: f64, mut sigma: f64, n
     // dual variable
     let (mut dual_a, mut dual_b) = (current.dx(), current.dy());
     // theta will be set upon first iteration
-    // let mut theta: f64;
-    let theta: f64 = 1.0;
+    let mut theta: f64;
 
     // helper function for dual update
     let f = |dual, gradient, sigma| dual + (sigma * gradient);
@@ -59,12 +58,12 @@ pub fn denoise(input: &Array2<f64>, lambda: f64, mut tau: f64, mut sigma: f64, n
             tau,
             lambda);
 
-        // // update theta
-        // theta = 1_f64 / (1_f64 + (2_f64 * gamma * tau));
-        // // update tau
-        // tau = theta * tau;
-        // // update sigma
-        // sigma = sigma / theta;
+        // update theta
+        theta = 1_f64 / (1_f64 + (2_f64 * gamma * tau));
+        // update tau
+        tau = theta * tau;
+        // update sigma
+        sigma = sigma / theta;
 
         // update the primal variable bar
         current_bar = &current + &((theta * (&current - &previous)));
