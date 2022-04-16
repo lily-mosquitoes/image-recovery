@@ -45,7 +45,8 @@ pub fn denoise(input: &Array2<f64>, lambda: f64, mut tau: f64, mut sigma: f64, n
     // divergence function
     let k_star = |a: &Array2<f64>, b: &Array2<f64>| a.dx_transposed() + b.dy_transposed();
 
-    for iter in 0..500 {
+    let mut iter = 1;
+    loop {
         // update the dual variable
         (dual_a, dual_b) = utils
             ::projection_onto_2d_ball(&f(dual_a, current_bar.dx(), sigma), &f(dual_b, current_bar.dy(), sigma));
@@ -68,14 +69,15 @@ pub fn denoise(input: &Array2<f64>, lambda: f64, mut tau: f64, mut sigma: f64, n
         // update the primal variable bar
         current_bar = &current + &((theta * (&current - &previous)));
 
-        // check for convergence
+        // check for convergence or 500 iterations
         let c = norm(&(&current - &previous)) / norm(&previous);
-        if c < 10_f64.powi(-10) {
+        if c < 10_f64.powi(-10) || iter >= 500 {
+            println!("returned at iter n {}", iter);
             break
         }
+        iter += 1;
     }
 
-    println!("returned at iter n {}", iter);
     current
 }
 
