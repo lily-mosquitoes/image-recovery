@@ -48,7 +48,7 @@ pub fn denoise(input: &Array2<f64>, lambda: f64, mut tau: f64, mut sigma: f64, n
     loop {
         // update the dual variable
         (dual_a, dual_b) = utils
-            ::projection_onto_2d_ball(&f(dual_a, current_bar.dx(), sigma), &f(dual_b, current_bar.dy(), sigma));
+            ::ball_projection(&f(dual_a, current_bar.dx(), sigma), &f(dual_b, current_bar.dy(), sigma));
 
         // update the primal variable
         // save it first

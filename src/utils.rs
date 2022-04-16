@@ -12,7 +12,7 @@ pub fn len_of_vectors(a: &Array2<f64>, b: &Array2<f64>) -> Array2<f64> {
 
 // the projection of vectors from two matrices into a 2D ball (-1, 1),
 // unchecked for size
-pub fn projection_onto_2d_ball(a: &Array2<f64>, b: &Array2<f64>) -> (Array2<f64>, Array2<f64>) {
+pub fn ball_projection(a: &Array2<f64>, b: &Array2<f64>) -> (Array2<f64>, Array2<f64>) {
     let max = len_of_vectors(a, b).map(|x| 1_f64.max(*x));
 
     (a / &max, b / &max)

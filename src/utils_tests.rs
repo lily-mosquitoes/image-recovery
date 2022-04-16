@@ -29,14 +29,14 @@ fn len_of_vectors_is_correct() {
 }
 
 #[test]
-fn projection_onto_2d_ball_is_correct() {
+fn ball_projection_is_correct() {
     let a = &arr2(&[[3.0, -0.5], [-3.0, -0.5]]);
     let b = &arr2(&[[4.0, 0.5], [0.0, 0.5]]);
 
     let proj_a = arr2(&[[0.6, -0.5], [-1.0, -0.5]]);
     let proj_b = arr2(&[[0.8, 0.5], [0.0, 0.5]]);
 
-    let test_proj = utils::projection_onto_2d_ball(a, b);
+    let test_proj = utils::ball_projection(a, b);
 
     assert_eq!(test_proj, (proj_a, proj_b));
 }
@@ -50,9 +50,9 @@ fn bench_len_of_vectors(bench: &mut Bencher) {
 }
 
 #[bench]
-fn bench_projection_onto_2d_ball(bench: &mut Bencher) {
+fn bench_ball_projection(bench: &mut Bencher) {
     let a = &get_random_matrix(D_1024);
     let b = &get_random_matrix(D_1024);
 
-    bench.iter(|| black_box(utils::projection_onto_2d_ball(a, b)));
+    bench.iter(|| black_box(utils::ball_projection(a, b)));
 }
