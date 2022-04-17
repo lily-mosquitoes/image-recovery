@@ -96,7 +96,7 @@
 //!
 //! Source image: | Output image:
 //! ---|---
-//! ![source image, noisy](examples/source_images/cute_birb_noisy.png) | ![output image, denoised](examples/result_images/cute_birb_denoised_multichannel.png)
+//! ![source image, noisy](https://github.com/lily-mosquitoes/image-recovery/raw/main/examples/source_images/angry_birb_noisy.png) | ![output image, denoised](https://github.com/lily-mosquitoes/image-recovery/raw/main/examples/result_images/angry_birb_denoised_multichannel.png)
 
 #![feature(test)]
 extern crate test;
