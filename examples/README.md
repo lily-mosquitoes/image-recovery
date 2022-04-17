@@ -16,7 +16,7 @@ The source image for the example is a **400px by 400px** image.
 
 The table below is *rough* benchmark of how fast each example runs on my particular machine/setup. This is here mostly so you know what to expect from running the examples.
 
-|| `--debug` | `--release` |
+|| `--debug` | `--release`
 |---|---|---|
-`denoise_each_channel` | `~320s` | `~7s` |
-`denoise_multichannel` | `~240s` | `~11s` |
+`denoise_each_channel` | `~320s` | `~7s`
+`denoise_multichannel` | `~240s` | `~11s`
