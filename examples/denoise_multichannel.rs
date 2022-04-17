@@ -1,7 +1,7 @@
 use image_recovery::{
-    image,
-    img::Manipulation,
-    solvers,
+    image, // re-exported `image` crate
+    img::Manipulation, // trait for image::RgbImage manipulation
+    solvers, // module with image recovery algorithms
 };
 
 fn main() {

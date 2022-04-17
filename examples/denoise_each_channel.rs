@@ -1,8 +1,8 @@
 use image_recovery::{
-    image,
-    RgbMatrices,
-    img::Manipulation,
-    solvers,
+    image, // re-exported `image` crate
+    RgbMatrices, // struct holding 3 matrices representing an RGB image
+    img::Manipulation, // trait for image::RgbImage manipulation
+    solvers, // module with image recovery algorithms
 };
 
 fn main() {
