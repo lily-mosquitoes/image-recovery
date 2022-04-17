@@ -102,10 +102,10 @@ pub fn denoise_multichannel(input: &RgbMatrices, lambda: f64, mut tau: f64, mut 
     }
 
     // primal variable (two copies, for storing value of iteration n-1)
-    let mut current = input.clone();
+    let mut current = input.to_owned();
     let mut previous: RgbMatrices;
     // primal variable "bar"
-    let mut current_bar = current.clone();
+    let mut current_bar = current.to_owned();
     // dual variable
     let (mut dual_a, mut dual_b) = (current.dx(), current.dy());
     // theta will be set upon first iteration
@@ -131,7 +131,7 @@ pub fn denoise_multichannel(input: &RgbMatrices, lambda: f64, mut tau: f64, mut 
 
         // update the primal variable
         // save it first
-        previous = current.clone();
+        previous = current.to_owned();
         current = weighted_average(&current - (tau *
             k_star(&dual_a, &dual_b)),
             tau,
