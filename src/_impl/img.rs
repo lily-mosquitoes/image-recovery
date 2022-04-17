@@ -61,7 +61,7 @@ impl Manipulation for RgbImage {
         img_matrices
     }
 
-    fn from_matrices(img_matrices: &RgbMatrices) -> RgbImage {
+    fn from_matrices(img_matrices: &RgbMatrices) -> Self {
         let shape = img_matrices.shape;
 
         // initialize image (full of zeroes)

@@ -18,11 +18,13 @@
 use image::RgbImage;
 use crate::RgbMatrices;
 
+/// trait for taking the shape of a matrix
 pub trait Shape {
     fn width(&self) -> usize;
     fn height(&self) -> usize;
 }
 
+/// enum for indexing color channels
 #[allow(dead_code)]
 #[derive(Clone, Copy)]
 #[repr(usize)]
@@ -32,8 +34,12 @@ pub enum Channel {
     Blue = 2,
 }
 
+/// trait for image manipulation
 pub trait Manipulation {
+    /// the shape of an image (width, height)
     fn shape(&self) -> (usize, usize);
+    /// converts an image into `RgbMatrices`
     fn to_matrices(&self) -> RgbMatrices;
-    fn from_matrices(img_matrices: &RgbMatrices) -> RgbImage;
+    /// converts `RgbMatrices` into an image
+    fn from_matrices(img_matrices: &RgbMatrices) -> Self;
 }
