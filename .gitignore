@@ -4,3 +4,7 @@
 
 # development files
 /dev_*
+
+# examples output
+/examples/result_images/*
+!/examples/result_images/.gitkeep
