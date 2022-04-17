@@ -5,7 +5,7 @@ use image_recovery::{
 };
 
 fn main() {
-    let img = image::open("dev_images/birb_noisy.png")
+    let img = image::open("examples/source_images/cute_birb_noisy.png")
         .expect("image could not be open")
         .into_rgb8();
 
@@ -30,6 +30,6 @@ fn main() {
 
     let new_img = image::RgbImage::from_matrices(&denoised);
 
-    new_img.save("dev_images/birb_denoise_each_channel.png")
+    new_img.save("examples/result_images/cute_birb_denoised_each_channel.png")
         .expect("image could not be saved");
 }
