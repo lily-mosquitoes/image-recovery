@@ -2,7 +2,12 @@
 name = "image-recovery"
 version = "0.1.0"
 edition = "2021"
-authors = ["Lílian Ferreira de Freitas <lily.mosquitoes@gmail.com>"]
+authors = ["Lílian Ferreira de Freitas <lily.mosquitoes@gmail.com>", "Emilia Lavie Kyllikki Blåsten"]
+description = "Image-recovery algorithms implemented in Rust"
+license = "AGPL-3.0-or-later"
+readme = "README.md"
+repository =
+documentation = "https://docs.rs/image-recovery"
 
 [dependencies]
 image = "0.24"
