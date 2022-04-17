@@ -71,7 +71,7 @@
 //!
 //!     // choose bounds for denoising solver
 //!     // the algorithm will run for at most `max_iter` iterations
-//!     let max_iter: u32 = 500;
+//!     let max_iter: u32 = 5;
 //!     // the algorithm will stop running if:
 //!     // `convergence_threshold < norm(current - previous) / norm(previous)`
 //!     // where `current` is the output candidate for the current iteration,
