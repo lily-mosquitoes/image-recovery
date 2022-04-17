@@ -62,7 +62,7 @@
 //!     // lambda drives the dual objective function
 //!     // closer to zero results in a smoother output image
 //!     // closer to infinity results in an output closer to the input
-//!     let lambda: f64 = 0.0000000000000001;
+//!     let lambda: f64 = 0.016548;
 //!
 //!     // gamma is a variable used to update the internal
 //!     // state of the algorithm's variables, providing
