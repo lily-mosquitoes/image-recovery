@@ -17,7 +17,7 @@ image-recovery = "0.1"
 
 ## Examples:
 
-Examples for each solver can be found in the [`examples` folder](https://github.com/lily-mosquitoes/image-recovery/examples), and those can be run with `cargo run --example example_name`. However, a quick example usage is shown below:
+Examples for each solver can be found in the [`examples` folder](https://github.com/lily-mosquitoes/image-recovery/tree/main/examples), and those can be run with `cargo run --example example_name`. However, a quick example usage is shown below:
 
 ### Image denoising (multichannel)
 
@@ -98,7 +98,7 @@ Benchmarking can be run with `cargo bench`.
 
 ## Copyright
 
-This code is licensed under the GNU Affero General Public License version 3 or later. See [LICENSE](https://github.com/lily-mosquitoes/image-recovery/LICENSE) or https://www.gnu.org/licenses/agpl-3.0.en.html.
+This code is licensed under the GNU Affero General Public License version 3 or later. See [LICENSE](https://github.com/lily-mosquitoes/image-recovery/blob/main/LICENSE) or https://www.gnu.org/licenses/agpl-3.0.en.html.
 
 ## Acknowledgements
 
