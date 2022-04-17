@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-//! Implementation for operations on matrices (`ndarray::Array2<f64>`)
+//! Implementation for operations on matrices (`ndarray::Array2<f64>`).
 
 use ndarray::Array2;
 use crate::{

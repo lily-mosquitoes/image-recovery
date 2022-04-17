@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-//! Implementation of Traits `Mul`, `Div`, `Add` and `Sub` for `RgbMatrices`
+//! Implementation of Traits `Mul`, `Div`, `Add` and `Sub` for `RgbMatrices`.
 
 use std::ops::{Mul, Div, Add, Sub};
 use ndarray::Array2;
