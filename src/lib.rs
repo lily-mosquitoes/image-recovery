@@ -19,6 +19,7 @@
 //!
 //! # How to use it:
 //! Declare the dependency in you Cargo.toml
+//!
 //! ```toml
 //! [dependencies]
 //! image-recovery = "0.1"
@@ -26,10 +27,11 @@
 //!
 //! # Examples:
 //!
-//! Examples can be found in the [`examples` folder](https://github.com/lily-mosquitoes/image-recovery/examples) and ran with `cargo run --example example_name`. A quick example usage is shown below:
+//! Examples for each solver can be found in the [`examples` folder](https://github.com/lily-mosquitoes/image-recovery/examples), and those can be run with `cargo run --example example_name`. However, a quick example usage is shown below:
+//!
 //! ## Image denoising (multichannel image)
 //!
-//! ```
+//! ```rust
 //! use image_recovery::{
 //!     image, // re-exported `image` crate
 //!     img::Manipulation, // trait for image::RgbImage manipulation
@@ -77,7 +79,7 @@
 //!     let convergence_threshold = 10_f64.powi(-10);
 //!
 //!     // now we can call the denoising solver with the chosen variables
-//!     let denoised = solvers::denoise_multichannel(&img_matrices, lambda, tau, sigma, norm_squared, gamma);
+//!     let denoised = solvers::denoise_multichannel(&img_matrices, lambda, tau, sigma, gamma, max_iter, convergence_threshold);
 //!
 //!     // we convert the solution into an RGB image format
 //!     let new_img = image::RgbImage::from_matrices(&denoised);

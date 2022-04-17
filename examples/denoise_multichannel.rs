@@ -38,7 +38,7 @@ fn main() {
     // choose bounds for denoising solver
     // the algorithm will run for at most `max_iter` iterations
     let max_iter: u32 = 500;
-    
+
     // the algorithm will stop running if:
     // `convergence_threshold < norm(current - previous) / norm(previous)`
     // where `current` is the output candidate for the current iteration,
@@ -46,7 +46,7 @@ fn main() {
     let convergence_threshold = 10_f64.powi(-10);
 
     // now we can call the denoising solver with the chosen variables
-    let denoised = solvers::denoise_multichannel(&img_matrices, lambda, tau, sigma, norm_squared, gamma);
+    let denoised = solvers::denoise_multichannel(&img_matrices, lambda, tau, sigma, gamma, max_iter, convergence_threshold);
 
     // we convert the solution into an RGB image format
     let new_img = image::RgbImage::from_matrices(&denoised);
