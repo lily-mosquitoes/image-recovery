@@ -13,7 +13,10 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-//! Image-recovery algorithms implemented in Rust.
+//! # Image recovery algorithms, implemented in Rust.
+//! The solvers on this library are based on the algorithms presented in [Chambolle, A. and Pock, T. (2011)](https://link.springer.com/article/10.1007/s10851-010-0251-1), with modifications inspired from [Bredies, K. (2014)](https://link.springer.com/chapter/10.1007/978-3-642-54774-4_3).
+//! How to use it:
+//! Declare the dependency in you Cargo.toml
 
 #![feature(test)]
 extern crate test;
@@ -26,7 +29,8 @@ pub mod solvers;
 mod _impl;
 #[cfg(test)] mod tests;
 
-use ndarray::Array2;
+pub use ndarray::Array2;
+pub use image;
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct RgbMatrices {
