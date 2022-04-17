@@ -15,7 +15,6 @@
 
 //! Struct and Traits for loading RGB images (`image::RgbImage`) into a set of 3 matrices (`RbgMatrices`) representing each color channel (Red, Green and Blue) as a matrix (`ndarray::Array2<f64>`), and vice-versa.
 
-use image::RgbImage;
 use crate::RgbMatrices;
 
 /// trait for taking the shape of a matrix
