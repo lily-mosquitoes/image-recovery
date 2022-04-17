@@ -33,7 +33,7 @@ use crate::{
 // should be at most 8.0.
 //
 // gamma => ???
-pub fn denoise(input: &Array2<f64>, lambda: f64, mut tau: f64, mut sigma: f64, gamma: f64) -> Array2<f64> {
+pub fn denoise(input: &Array2<f64>, lambda: f64, mut tau: f64, mut sigma: f64, gamma: f64, max_iter: u32, convergence_threshold: f64) -> Array2<f64> {
     // primal variable (two copies, for storing value of iteration n-1)
     let mut current = input.to_owned();
     let mut previous: Array2<f64>;
@@ -56,7 +56,7 @@ pub fn denoise(input: &Array2<f64>, lambda: f64, mut tau: f64, mut sigma: f64, g
     // divergence function
     let k_star = |a: &Array2<f64>, b: &Array2<f64>| a.dx_transposed() + b.dy_transposed();
 
-    let mut iter = 1;
+    let mut iter: u32 = 1;
     loop {
         // update the dual variable
         (dual_a, dual_b) = utils
@@ -82,7 +82,7 @@ pub fn denoise(input: &Array2<f64>, lambda: f64, mut tau: f64, mut sigma: f64, g
 
         // check for convergence or 500 iterations
         let c = norm(&(&current - &previous)) / norm(&previous);
-        if c < 10_f64.powi(-10) || iter >= 500 {
+        if c < convergence_threshold || iter >= max_iter {
             println!("returned at iter n {}", iter);
             break
         }
@@ -92,7 +92,7 @@ pub fn denoise(input: &Array2<f64>, lambda: f64, mut tau: f64, mut sigma: f64, g
     current
 }
 
-pub fn denoise_multichannel(input: &RgbMatrices, lambda: f64, mut tau: f64, mut sigma: f64, gamma: f64) -> RgbMatrices {
+pub fn denoise_multichannel(input: &RgbMatrices, lambda: f64, mut tau: f64, mut sigma: f64, gamma: f64, max_iter: u32, convergence_threshold: f64) -> RgbMatrices {
     // primal variable (two copies, for storing value of iteration n-1)
     let mut current = input.to_owned();
     let mut previous: RgbMatrices;
@@ -115,7 +115,7 @@ pub fn denoise_multichannel(input: &RgbMatrices, lambda: f64, mut tau: f64, mut 
     // divergence function
     let k_star = |a: &RgbMatrices, b: &RgbMatrices| a.dx_transposed() + b.dy_transposed();
 
-    let mut iter = 1;
+    let mut iter: u32 = 1;
     loop {
         // update the dual variable
         (dual_a, dual_b) = utils
@@ -141,7 +141,7 @@ pub fn denoise_multichannel(input: &RgbMatrices, lambda: f64, mut tau: f64, mut 
 
         // check for convergence or 500 iterations
         let c = norm(&(&current - &previous)) / norm(&previous);
-        if c < 10_f64.powi(-10) || iter >= 500 {
+        if c < convergence_threshold || iter >= max_iter {
             println!("returned at iter n {}", iter);
             break
         }
