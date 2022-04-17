@@ -21,7 +21,8 @@ use crate::RgbMatrices;
 
 // helper function
 fn arr2_shape(x: &Array2<f64>) -> (usize, usize) {
-    (x.ncols() as usize, x.nrows() as usize)
+    let shp = x.raw_dim();
+    (shp[0], shp[1])
 }
 
 // impl Mul
@@ -98,7 +99,7 @@ impl Mul<Array2<f64>> for RgbMatrices {
 
     fn mul(self, rhs: Array2<f64>) -> Self {
         if self.shape != arr2_shape(&rhs) {
-            panic!("icompatible shapes, self = {:?} x rhs = {:?}", self.shape, rhs.shape());
+            panic!("icompatible shapes, self = {:?} x rhs = {:?}", self.shape, arr2_shape(&rhs));
         }
 
         RgbMatrices {
@@ -115,7 +116,7 @@ impl<'a> Mul<&'a Array2<f64>> for RgbMatrices {
 
     fn mul(self, rhs: &'a Array2<f64>) -> Self {
         if self.shape != arr2_shape(rhs) {
-            panic!("icompatible shapes, self = {:?} x rhs = {:?}", self.shape, rhs.shape());
+            panic!("icompatible shapes, self = {:?} x rhs = {:?}", self.shape, arr2_shape(rhs));
         }
 
         RgbMatrices {
@@ -132,7 +133,7 @@ impl<'a> Mul<Array2<f64>> for &'a RgbMatrices {
 
     fn mul(self, rhs: Array2<f64>) -> RgbMatrices {
         if self.shape != arr2_shape(&rhs) {
-            panic!("icompatible shapes, self = {:?} x rhs = {:?}", self.shape, rhs.shape());
+            panic!("icompatible shapes, self = {:?} x rhs = {:?}", self.shape, arr2_shape(&rhs));
         }
 
         RgbMatrices {
@@ -149,7 +150,7 @@ impl<'a> Mul<&'a Array2<f64>> for &'a RgbMatrices {
 
     fn mul(self, rhs: &'a Array2<f64>) -> RgbMatrices {
         if self.shape != arr2_shape(rhs) {
-            panic!("icompatible shapes, self = {:?} x rhs = {:?}", self.shape, rhs.shape());
+            panic!("icompatible shapes, self = {:?} x rhs = {:?}", self.shape, arr2_shape(rhs));
         }
 
         RgbMatrices {
@@ -287,7 +288,7 @@ impl Div<Array2<f64>> for RgbMatrices {
 
     fn div(self, rhs: Array2<f64>) -> Self {
         if self.shape != arr2_shape(&rhs) {
-            panic!("icompatible shapes, self = {:?} x rhs = {:?}", self.shape, rhs.shape());
+            panic!("icompatible shapes, self = {:?} x rhs = {:?}", self.shape, arr2_shape(&rhs));
         }
 
         RgbMatrices {
@@ -304,7 +305,7 @@ impl<'a> Div<&'a Array2<f64>> for RgbMatrices {
 
     fn div(self, rhs: &'a Array2<f64>) -> Self {
         if self.shape != arr2_shape(rhs) {
-            panic!("icompatible shapes, self = {:?} x rhs = {:?}", self.shape, rhs.shape());
+            panic!("icompatible shapes, self = {:?} x rhs = {:?}", self.shape, arr2_shape(rhs));
         }
 
         RgbMatrices {
@@ -321,7 +322,7 @@ impl<'a> Div<Array2<f64>> for &'a RgbMatrices {
 
     fn div(self, rhs: Array2<f64>) -> RgbMatrices {
         if self.shape != arr2_shape(&rhs) {
-            panic!("icompatible shapes, self = {:?} x rhs = {:?}", self.shape, rhs.shape());
+            panic!("icompatible shapes, self = {:?} x rhs = {:?}", self.shape, arr2_shape(&rhs));
         }
 
         RgbMatrices {
@@ -338,7 +339,7 @@ impl<'a> Div<&'a Array2<f64>> for &'a RgbMatrices {
 
     fn div(self, rhs: &'a Array2<f64>) -> RgbMatrices {
         if self.shape != arr2_shape(rhs) {
-            panic!("icompatible shapes, self = {:?} x rhs = {:?}", self.shape, rhs.shape());
+            panic!("icompatible shapes, self = {:?} x rhs = {:?}", self.shape, arr2_shape(rhs));
         }
 
         RgbMatrices {
@@ -476,7 +477,7 @@ impl Add<Array2<f64>> for RgbMatrices {
 
     fn add(self, rhs: Array2<f64>) -> Self {
         if self.shape != arr2_shape(&rhs) {
-            panic!("icompatible shapes, self = {:?} x rhs = {:?}", self.shape, rhs.shape());
+            panic!("icompatible shapes, self = {:?} x rhs = {:?}", self.shape, arr2_shape(&rhs));
         }
 
         RgbMatrices {
@@ -493,7 +494,7 @@ impl<'a> Add<&'a Array2<f64>> for RgbMatrices {
 
     fn add(self, rhs: &'a Array2<f64>) -> Self {
         if self.shape != arr2_shape(rhs) {
-            panic!("icompatible shapes, self = {:?} x rhs = {:?}", self.shape, rhs.shape());
+            panic!("icompatible shapes, self = {:?} x rhs = {:?}", self.shape, arr2_shape(rhs));
         }
 
         RgbMatrices {
@@ -510,7 +511,7 @@ impl<'a> Add<Array2<f64>> for &'a RgbMatrices {
 
     fn add(self, rhs: Array2<f64>) -> RgbMatrices {
         if self.shape != arr2_shape(&rhs) {
-            panic!("icompatible shapes, self = {:?} x rhs = {:?}", self.shape, rhs.shape());
+            panic!("icompatible shapes, self = {:?} x rhs = {:?}", self.shape, arr2_shape(&rhs));
         }
 
         RgbMatrices {
@@ -527,7 +528,7 @@ impl<'a> Add<&'a Array2<f64>> for &'a RgbMatrices {
 
     fn add(self, rhs: &'a Array2<f64>) -> RgbMatrices {
         if self.shape != arr2_shape(rhs) {
-            panic!("icompatible shapes, self = {:?} x rhs = {:?}", self.shape, rhs.shape());
+            panic!("icompatible shapes, self = {:?} x rhs = {:?}", self.shape, arr2_shape(rhs));
         }
 
         RgbMatrices {
@@ -665,7 +666,7 @@ impl Sub<Array2<f64>> for RgbMatrices {
 
     fn sub(self, rhs: Array2<f64>) -> Self {
         if self.shape != arr2_shape(&rhs) {
-            panic!("icompatible shapes, self = {:?} x rhs = {:?}", self.shape, rhs.shape());
+            panic!("icompatible shapes, self = {:?} x rhs = {:?}", self.shape, arr2_shape(&rhs));
         }
 
         RgbMatrices {
@@ -682,7 +683,7 @@ impl<'a> Sub<&'a Array2<f64>> for RgbMatrices {
 
     fn sub(self, rhs: &'a Array2<f64>) -> Self {
         if self.shape != arr2_shape(rhs) {
-            panic!("icompatible shapes, self = {:?} x rhs = {:?}", self.shape, rhs.shape());
+            panic!("icompatible shapes, self = {:?} x rhs = {:?}", self.shape, arr2_shape(rhs));
         }
 
         RgbMatrices {
@@ -699,7 +700,7 @@ impl<'a> Sub<Array2<f64>> for &'a RgbMatrices {
 
     fn sub(self, rhs: Array2<f64>) -> RgbMatrices {
         if self.shape != arr2_shape(&rhs) {
-            panic!("icompatible shapes, self = {:?} x rhs = {:?}", self.shape, rhs.shape());
+            panic!("icompatible shapes, self = {:?} x rhs = {:?}", self.shape, arr2_shape(&rhs));
         }
 
         RgbMatrices {
@@ -716,7 +717,7 @@ impl<'a> Sub<&'a Array2<f64>> for &'a RgbMatrices {
 
     fn sub(self, rhs: &'a Array2<f64>) -> RgbMatrices {
         if self.shape != arr2_shape(rhs) {
-            panic!("icompatible shapes, self = {:?} x rhs = {:?}", self.shape, rhs.shape());
+            panic!("icompatible shapes, self = {:?} x rhs = {:?}", self.shape, arr2_shape(rhs));
         }
 
         RgbMatrices {

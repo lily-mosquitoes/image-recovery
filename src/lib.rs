@@ -137,16 +137,16 @@ impl RgbMatrices {
     // generates a new `RgbMatrices` from the given 3 matrices, each representing a color channel. Panics if their shapes aren't all the same.
     #[must_use]
     pub fn from_channels(red: &Array2<f64>, green: &Array2<f64>, blue: &Array2<f64>) -> Self {
-        let red_shape = (red.ncols(), red.nrows());
-        let green_shape = (green.ncols(), green.nrows());
-        let blue_shape = (blue.ncols(), blue.nrows());
+        let red_shape = red.raw_dim();
+        let green_shape = green.raw_dim();
+        let blue_shape = blue.raw_dim();
 
         if !((red_shape == green_shape) && (red_shape == blue_shape)) {
             panic!("arrays must be all of the same shape");
         }
 
         RgbMatrices {
-            shape: red_shape,
+            shape: (red_shape[0], red_shape[1]),
             red: red.to_owned(),
             green: green.to_owned(),
             blue: blue.to_owned(),
