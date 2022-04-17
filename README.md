@@ -99,3 +99,8 @@ Benchmarking can be run with `cargo bench`.
 ## Copyright
 
 This code is licensed under the GNU Affero General Public License version 3 or later. See [LICENSE](https://github.com/lily-mosquitoes/image-recovery/LICENSE) or https://www.gnu.org/licenses/agpl-3.0.en.html.
+
+## Acknowledgements
+
+Code by [Lílian Ferreira de Freitas](https://github.com/lily-mosquitoes),
+mathematics by [Emilia L. K. Blåsten](https://orcid.org/0000-0001-6675-6108)
