@@ -1,10 +1,10 @@
 use pretty_assertions::assert_eq;
-use test::{Bencher, black_box};
+// use test::{Bencher, black_box}; // TODO bench
 use ndarray::Array2;
-use crate::ops::{Derivative, Power};
+use crate::array_ops::Derivative;
 
 static D_32: (usize, usize) = (32, 32);
-static D_1024: (usize, usize) = (1024, 1024);
+// static D_1024: (usize, usize) = (1024, 1024); // TODO bench
 
 fn get_random_matrix(dimensions: (usize, usize)) -> Array2<f64> {
     let mut matrix = Array2::<f64>::zeros(dimensions);
@@ -16,6 +16,9 @@ fn get_random_matrix(dimensions: (usize, usize)) -> Array2<f64> {
 
     matrix
 }
+
+// TODO test other helper functions
+// TODO test multichannel variants
 
 #[test]
 fn k_star_is_correct() {

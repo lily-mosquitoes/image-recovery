@@ -17,6 +17,8 @@ fn get_random_matrix(dimensions: (usize, usize)) -> Array2<f64> {
     matrix
 }
 
+// TODO test multichannel variants
+
 #[test]
 fn len_of_vectors_is_correct() {
     let a = &get_random_matrix(D_32);
