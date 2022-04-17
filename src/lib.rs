@@ -1,4 +1,4 @@
-// Copyright (C) 2022  Lílian Ferreira de Freitas & Emilia Lavie Kyllikki Blåsten
+// Copyright (C) 2022  Lílian Ferreira de Freitas & Emilia L. K. Blåsten
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as published
