@@ -95,3 +95,7 @@ Note that the Doc-test in `src/lib.rs` will run very slowly in debug mode, it is
 ## Benchmarking
 
 Benchmarking can be run with `cargo bench`.
+
+## Copyright
+
+This code is licensed under the GNU Affero General Public License version 3 or later. See [LICENSE](https://github.com/lily-mosquitoes/image-recovery/LICENSE) or https://www.gnu.org/licenses/agpl-3.0.en.html.
