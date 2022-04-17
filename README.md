@@ -30,7 +30,7 @@ use image_recovery::{
 
 fn main() {
     // the `image` crate provides functionality to decode images
-    let img = image::open("examples/source_images/cute_birb_noisy.png")
+    let img = image::open("examples/source_images/angry_birb_noisy.png")
         .expect("image could not be open")
         .into_rgb8(); // the algorithms in this library are implemented for RGB images
 
@@ -50,7 +50,7 @@ fn main() {
     // lambda drives the dual objective function
     // closer to zero results in a smoother output image
     // closer to infinity results in an output closer to the input
-    let lambda: f64 = 0.016548;
+    let lambda: f64 = 0.0259624705;
 
     // gamma is a variable used to update the internal
     // state of the algorithm's variables, providing
@@ -75,7 +75,7 @@ fn main() {
     let new_img = image::RgbImage::from_matrices(&denoised);
 
     // encode it and save it to a file
-    new_img.save("examples/result_images/cute_birb_denoised_multichannel.png")
+    new_img.save("examples/result_images/angry_birb_denoised_multichannel.png")
         .expect("image could not be saved");
 }
 ```
@@ -84,7 +84,7 @@ This should provide the following result:
 
 Source image: | Output image:
 ---|---
-![source image, noisy](examples/source_images/cute_birb_noisy.png) | ![output image, denoised](examples/result_images/cute_birb_denoised_multichannel.png)
+![source image, noisy](examples/source_images/angry_birb_noisy.png) | ![output image, denoised](examples/result_images/angry_birb_denoised_multichannel.png)
 
 ## Testing
 
