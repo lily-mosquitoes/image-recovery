@@ -95,13 +95,14 @@ pub mod array_ops;
 pub mod img;
 pub mod utils;
 pub mod solvers;
-// #[cfg(test)] mod solvers_tests;
 mod _impl;
 #[cfg(test)] mod tests;
 
 pub use ndarray::Array2;
 pub use image;
 
+/// struct representing an RGB image as 3 matrices,
+/// one for each color channel
 #[derive(Debug, Clone, PartialEq)]
 pub struct RgbMatrices {
     pub shape: (usize, usize),
@@ -111,6 +112,7 @@ pub struct RgbMatrices {
 }
 
 impl RgbMatrices {
+    /// generates a new `RgbMatrices` with all channels initialized to matrices of the given `shape`, but full of zeroes.
     #[inline]
     #[must_use]
     pub fn new(shape: (usize, usize)) -> Self {
@@ -122,6 +124,7 @@ impl RgbMatrices {
         }
     }
 
+    // generates a new `RgbMatrices` from the given 3 matrices, each representing a color channel. Panics if their shapes aren't all the same.
     #[must_use]
     pub fn from_channels(red: &Array2<f64>, green: &Array2<f64>, blue: &Array2<f64>) -> Self {
         let red_shape = (red.ncols(), red.nrows());
@@ -140,10 +143,12 @@ impl RgbMatrices {
         }
     }
 
+    /// returns the sum of all elements in the `RgbMatrices`.
     pub fn sum(&self) -> f64 {
         (&self.red + &self.green + &self.blue).sum()
     }
 
+    /// applies the given closure by calling `map(closure)` on each channel of the `RgbMatrices`. Useful for element-wise operations.
     pub fn map<F>(&self, mut closure: F) -> RgbMatrices
     where
         F: FnMut(&f64) -> f64,
