@@ -1,4 +1,5 @@
 use image_recovery::{
+    image,
     RgbMatrices,
     img::Manipulation,
     solvers,
