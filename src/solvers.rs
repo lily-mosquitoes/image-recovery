@@ -13,6 +13,8 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+//! Implementation of algorithms for image recovery.
+
 use ndarray::Array2;
 use crate::{
     RgbMatrices,
@@ -20,19 +22,26 @@ use crate::{
     utils,
 };
 
-// J Math Imaging Vis (2011) 40: 120–145
-// DOI 10.1007/s10851-010-0251-1
-
-// lambda => the target value of the dual objective function,
-// i.e. how close you want to be to the original matrix (image):
-// 0 == completely flat; INFINITY == same as original.
-//
-// tau, sigma => meaning?
-//
-// norm_squared => affects how fast the algorithm converges,
-// should be at most 8.0.
-//
-// gamma => ???
+/// single channel denoising algorithm.
+///
+/// # inputs
+/// `lambda` is the target value of the dual objective function,
+/// i.e. how close you want the output to be to the input:
+/// approaching 0, the output should be completely smooth (flat),
+/// approaching "infinifty", the output should be the same as
+/// the original input.
+///
+/// `tau` and `sigma` affect how fast the algorithm converges,
+/// according to Chambolle, A. and Pock, T. (2011) these should
+/// be chosen such that `tau * lambda * L2 norm^2 <= 1` where
+/// `L2 norm^2 <= 8`.
+///
+/// `gamma` updates the algorithm's internal variables,
+/// for the accelerated algorithm of Chambolle, A. and Pock, T. (2011)
+/// the chosen value is `0.35 * lambda`.
+///
+/// `max_iter` and `convergence_threshold` bound the runtime of the
+/// algorithm, i.e. it runs until `convergence_threshold < norm(current - previous) / norm(previous)` or `max_iter` is hit.
 pub fn denoise(input: &Array2<f64>, lambda: f64, mut tau: f64, mut sigma: f64, gamma: f64, max_iter: u32, convergence_threshold: f64) -> Array2<f64> {
     // primal variable (two copies, for storing value of iteration n-1)
     let mut current = input.to_owned();
@@ -80,7 +89,7 @@ pub fn denoise(input: &Array2<f64>, lambda: f64, mut tau: f64, mut sigma: f64, g
         // update the primal variable bar
         current_bar = &current + &((theta * (&current - &previous)));
 
-        // check for convergence or 500 iterations
+        // check for convergence or max_iter iterations
         let c = norm(&(&current - &previous)) / norm(&previous);
         if c < convergence_threshold || iter >= max_iter {
             println!("returned at iter n {}", iter);
@@ -92,6 +101,26 @@ pub fn denoise(input: &Array2<f64>, lambda: f64, mut tau: f64, mut sigma: f64, g
     current
 }
 
+/// multichannel denoising algorithm.
+///
+/// # inputs
+/// `lambda` is the target value of the dual objective function,
+/// i.e. how close you want the output to be to the input:
+/// approaching 0, the output should be completely smooth (flat),
+/// approaching "infinifty", the output should be the same as
+/// the original input.
+///
+/// `tau` and `sigma` affect how fast the algorithm converges,
+/// according to Chambolle, A. and Pock, T. (2011) these should
+/// be chosen such that `tau * lambda * L2 norm^2 <= 1` where
+/// `L2 norm^2 <= 8`.
+///
+/// `gamma` updates the algorithm's internal variables,
+/// for the accelerated algorithm of Chambolle, A. and Pock, T. (2011)
+/// the chosen value is `0.35 * lambda`.
+///
+/// `max_iter` and `convergence_threshold` bound the runtime of the
+/// algorithm, i.e. it runs until `convergence_threshold < norm(current - previous) / norm(previous)` or `max_iter` is hit.
 pub fn denoise_multichannel(input: &RgbMatrices, lambda: f64, mut tau: f64, mut sigma: f64, gamma: f64, max_iter: u32, convergence_threshold: f64) -> RgbMatrices {
     // primal variable (two copies, for storing value of iteration n-1)
     let mut current = input.to_owned();
@@ -139,7 +168,7 @@ pub fn denoise_multichannel(input: &RgbMatrices, lambda: f64, mut tau: f64, mut 
         // update the primal variable bar
         current_bar = &current + &((theta * (&current - &previous)));
 
-        // check for convergence or 500 iterations
+        // check for convergence or max_iter iterations
         let c = norm(&(&current - &previous)) / norm(&previous);
         if c < convergence_threshold || iter >= max_iter {
             println!("returned at iter n {}", iter);
