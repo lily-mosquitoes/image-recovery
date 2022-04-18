@@ -82,12 +82,12 @@ pub fn denoise(input: &Array2<f64>, lambda: f64, mut tau: f64, mut sigma: f64, g
         // update theta
         theta = 1_f64 / (1_f64 + (2_f64 * gamma * tau));
         // update tau
-        tau = theta * tau;
+        tau *= theta;
         // update sigma
-        sigma = sigma / theta;
+        sigma /= theta;
 
         // update the primal variable bar
-        current_bar = &current + &((theta * (&current - &previous)));
+        current_bar = &current + &(theta * (&current - &previous));
 
         // check for convergence or max_iter iterations
         let c = norm(&(&current - &previous)) / norm(&previous);
@@ -161,12 +161,12 @@ pub fn denoise_multichannel(input: &RgbMatrices, lambda: f64, mut tau: f64, mut 
         // update theta
         theta = 1_f64 / (1_f64 + (2_f64 * gamma * tau));
         // update tau
-        tau = theta * tau;
+        tau *= theta;
         // update sigma
-        sigma = sigma / theta;
+        sigma /= theta;
 
         // update the primal variable bar
-        current_bar = &current + &((theta * (&current - &previous)));
+        current_bar = &current + &(theta * (&current - &previous));
 
         // check for convergence or max_iter iterations
         let c = norm(&(&current - &previous)) / norm(&previous);
