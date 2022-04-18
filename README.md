@@ -8,6 +8,10 @@ Uses the [`image` crate](https://docs.rs/image/latest/image/) for loading and sa
 
 Only denoising algorithms is implemented so far, see the [roadmap section](#roadmap) for planned algorithm implementations.
 
+![GitHub](https://img.shields.io/github/license/lily-mosquitoes/image-recovery?color=green)
+
+[See the docs](https://docs.rs/image-recovery/latest/image-recovery)
+
 ## How to use:
 
 Declare the dependency in you Cargo.toml
