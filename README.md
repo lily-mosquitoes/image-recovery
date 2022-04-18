@@ -6,6 +6,8 @@ The solvers on this library are based on the algorithms presented in [Chambolle,
 
 Uses the [`image` crate](https://docs.rs/image/latest/image/) for loading and saving images, and the [`ndarray` crate](https://docs.rs/ndarray/latest/ndarray/index.html) for manipulating matrices.
 
+Only denoising algorithms is implemented so far, see the [roadmap section](#roadmap) for planned algorithm implementations.
+
 ## How to use:
 
 Declare the dependency in you Cargo.toml
@@ -95,6 +97,17 @@ Note that the Doc-test in `src/lib.rs` will run very slowly in debug mode, it is
 ## Benchmarking
 
 Benchmarking can be run with `cargo bench`.
+
+## Roadmap
+
+Image recovery algorithms to implement:
+
+- [x] Denoising (single and multichannel variants)
+- [ ] Zooming
+- [ ] Deblurring
+- [ ] Dequantization
+- [ ] Inpainting
+- [ ] Compressive imaging
 
 ## Copyright
 
