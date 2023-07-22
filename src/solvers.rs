@@ -15,12 +15,11 @@
 
 //! Implementation of algorithms for image recovery.
 
-use ndarray::Array2;
 use crate::{
-    RgbMatrices,
     array_ops::{Derivative, Power},
-    utils,
+    utils, RgbMatrices,
 };
+use ndarray::Array2;
 
 /// single channel denoising algorithm.
 ///
@@ -42,7 +41,15 @@ use crate::{
 ///
 /// `max_iter` and `convergence_threshold` bound the runtime of the
 /// algorithm, i.e. it runs until `convergence_threshold < norm(current - previous) / norm(previous)` or `max_iter` is hit.
-pub fn denoise(input: &Array2<f64>, lambda: f64, mut tau: f64, mut sigma: f64, gamma: f64, max_iter: u32, convergence_threshold: f64) -> Array2<f64> {
+pub fn denoise(
+    input: &Array2<f64>,
+    lambda: f64,
+    mut tau: f64,
+    mut sigma: f64,
+    gamma: f64,
+    max_iter: u32,
+    convergence_threshold: f64,
+) -> Array2<f64> {
     // primal variable (two copies, for storing value of iteration n-1)
     let mut current = input.to_owned();
     let mut previous: Array2<f64>;
@@ -68,16 +75,15 @@ pub fn denoise(input: &Array2<f64>, lambda: f64, mut tau: f64, mut sigma: f64, g
     let mut iter: u32 = 1;
     loop {
         // update the dual variable
-        (dual_a, dual_b) = utils
-            ::ball_projection(&f(dual_a, current_bar.dx(), sigma), &f(dual_b, current_bar.dy(), sigma));
+        (dual_a, dual_b) = utils::ball_projection(
+            &f(dual_a, current_bar.dx(), sigma),
+            &f(dual_b, current_bar.dy(), sigma),
+        );
 
         // update the primal variable
         // save it first
         previous = current.to_owned();
-        current = weighted_average(&current - (tau *
-            k_star(&dual_a, &dual_b)),
-            tau,
-            lambda);
+        current = weighted_average(&current - (tau * k_star(&dual_a, &dual_b)), tau, lambda);
 
         // update theta
         theta = 1_f64 / (1_f64 + (2_f64 * gamma * tau));
@@ -92,8 +98,8 @@ pub fn denoise(input: &Array2<f64>, lambda: f64, mut tau: f64, mut sigma: f64, g
         // check for convergence or max_iter iterations
         let c = norm(&(&current - &previous)) / norm(&previous);
         if c < convergence_threshold || iter >= max_iter {
-            println!("returned at iter n {}", iter);
-            break
+            log::debug!("returned at iter n {}", iter);
+            break;
         }
         iter += 1;
     }
@@ -121,7 +127,15 @@ pub fn denoise(input: &Array2<f64>, lambda: f64, mut tau: f64, mut sigma: f64, g
 ///
 /// `max_iter` and `convergence_threshold` bound the runtime of the
 /// algorithm, i.e. it runs until `convergence_threshold < norm(current - previous) / norm(previous)` or `max_iter` is hit.
-pub fn denoise_multichannel(input: &RgbMatrices, lambda: f64, mut tau: f64, mut sigma: f64, gamma: f64, max_iter: u32, convergence_threshold: f64) -> RgbMatrices {
+pub fn denoise_multichannel(
+    input: &RgbMatrices,
+    lambda: f64,
+    mut tau: f64,
+    mut sigma: f64,
+    gamma: f64,
+    max_iter: u32,
+    convergence_threshold: f64,
+) -> RgbMatrices {
     // primal variable (two copies, for storing value of iteration n-1)
     let mut current = input.to_owned();
     let mut previous: RgbMatrices;
@@ -147,16 +161,15 @@ pub fn denoise_multichannel(input: &RgbMatrices, lambda: f64, mut tau: f64, mut 
     let mut iter: u32 = 1;
     loop {
         // update the dual variable
-        (dual_a, dual_b) = utils
-            ::ball_projection_multichannel(&f(dual_a, current_bar.dx(), sigma), &f(dual_b, current_bar.dy(), sigma));
+        (dual_a, dual_b) = utils::ball_projection_multichannel(
+            &f(dual_a, current_bar.dx(), sigma),
+            &f(dual_b, current_bar.dy(), sigma),
+        );
 
         // update the primal variable
         // save it first
         previous = current.to_owned();
-        current = weighted_average(&current - (tau *
-            k_star(&dual_a, &dual_b)),
-            tau,
-            lambda);
+        current = weighted_average(&current - (tau * k_star(&dual_a, &dual_b)), tau, lambda);
 
         // update theta
         theta = 1_f64 / (1_f64 + (2_f64 * gamma * tau));
@@ -171,8 +184,8 @@ pub fn denoise_multichannel(input: &RgbMatrices, lambda: f64, mut tau: f64, mut 
         // check for convergence or max_iter iterations
         let c = norm(&(&current - &previous)) / norm(&previous);
         if c < convergence_threshold || iter >= max_iter {
-            println!("returned at iter n {}", iter);
-            break
+            log::debug!("returned at iter n {}", iter);
+            break;
         }
         iter += 1;
     }

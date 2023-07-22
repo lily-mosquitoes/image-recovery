@@ -101,15 +101,16 @@
 #![feature(test)]
 extern crate test;
 
+mod _impl;
 pub mod array_ops;
 pub mod img;
-pub mod utils;
 pub mod solvers;
-mod _impl;
-#[cfg(test)] mod tests;
+#[cfg(test)]
+mod tests;
+pub mod utils;
 
-pub use ndarray::Array2;
 pub use image;
+pub use ndarray::Array2;
 
 /// struct representing an RGB image as 3 matrices,
 /// one for each color channel

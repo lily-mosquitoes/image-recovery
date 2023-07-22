@@ -1,6 +1,6 @@
 [package]
 name = "image-recovery"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 authors = ["Lílian Ferreira de Freitas <lily.mosquitoes@gmail.com>", "Emilia L. K. Blåsten <emilia.blasten@iki.fi>"]
 description = "Image recovery algorithms, implemented in Rust."
@@ -11,6 +11,7 @@ documentation = "https://docs.rs/image-recovery"
 categories = ["mathematics"]
 
 [dependencies]
+log = "0.4"
 image = "0.24"
 ndarray = { version = "0.15", features = ["matrixmultiply-threading"] }
 
