@@ -1,0 +1,12 @@
+max_width = 80
+use_small_heuristics = "Default"
+fn_call_width = 80
+format_macro_matchers = true
+format_strings = true
+imports_layout = "Vertical"
+match_block_trailing_comma = true
+imports_granularity = "Crate"
+reorder_impl_items = true
+group_imports = "StdExternalCrate"
+wrap_comments = true
+
