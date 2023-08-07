@@ -14,6 +14,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 //! Implementation of algorithms for image recovery.
+use std::ops::Deref;
+
 use ndarray::{
     Array3,
     ShapeError,
@@ -64,7 +66,7 @@ impl ImageArray<Array3<f64>> {
         convergence_threshold: f64,
     ) -> Result<Self, ShapeError> {
         // primal variable (two copies, for storing value of iteration n-1)
-        let mut current: Array3<f64> = (*self).clone();
+        let mut current: Array3<f64> = self.deref().clone();
         let mut previous: Array3<f64>;
         // primal variable "bar"
         let mut current_bar = current.clone();

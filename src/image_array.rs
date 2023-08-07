@@ -24,7 +24,7 @@ use crate::ops::{
 /// An array representing an image, used with the solvers.
 /// The From trait is implemented for the types GrayImage and RgbImage in the
 /// [`image`](docs.rs/image/latest/image/) crate.
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct ImageArray<T: Gradient + Average + VectorLen + Norm> {
     inner: T,
 }
