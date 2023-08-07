@@ -9,7 +9,7 @@ Uses the [`image` crate](https://docs.rs/image/latest/image/) for loading and sa
 Only denoising algorithms is implemented so far, see the [roadmap section](#roadmap) for planned algorithm implementations.
 
 ![Crates.io](https://img.shields.io/crates/v/image-recovery?style=flat-square)
-![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/lily-mosuqitoes/image-recovery/test?style=flat-square)
+![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/lily-mosquitoes/image-recovery/test.yml?style=flat-square)
 ![GitHub](https://img.shields.io/github/license/lily-mosquitoes/image-recovery?style=flat-square&color=ff69b4)
 
 [See the docs](https://docs.rs/image-recovery/latest/image-recovery)
