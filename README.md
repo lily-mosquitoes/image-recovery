@@ -18,31 +18,30 @@ Declare the dependency in you Cargo.toml
 
 ```toml
 [dependencies]
-image-recovery = "0.1"
+image-recovery = "0.2"
 ```
 
 ## Examples:
 
-Examples for each solver can be found in the [`examples` folder](https://github.com/lily-mosquitoes/image-recovery/tree/main/examples), and those can be run with `cargo run --example example_name`. However, a quick example usage is shown below:
+Only the `denoise` solver is currently implemented. The examples for it can be found in the [`examples` folder](https://github.com/lily-mosquitoes/image-recovery/tree/main/examples), and can be run with `cargo run --example denoise`. Furthermore, a quick example usage is shown below:
 
 ### Image denoising (multichannel)
 
 ```rust
 use image_recovery::{
     image, // re-exported `image` crate
-    img::Manipulation, // trait for image::RgbImage manipulation
-    solvers, // module with image recovery algorithms
+    ImageArray, // struct for holding images
 };
 
 fn main() {
     // the `image` crate provides functionality to decode images
     let img = image::open("examples/source_images/angry_birb_noisy.png")
         .expect("image could not be open")
-        .into_rgb8(); // the algorithms in this library are implemented for RGB images
+        .into_rgb8(); // the algorithms in this library are implemented for the Luma and Rgb types
 
     // load the RGB image into an object which is composed
     // of 3 matrices, one for each channel
-    let img_matrices = img.to_matrices();
+    let img_array = ImageArray::from(&img);
 
     // choose inputs for the denoising solver:
     // according to Chambolle, A. and Pock, T. (2011),
@@ -68,6 +67,7 @@ fn main() {
     // choose bounds for denoising solver
     // the algorithm will run for at most `max_iter` iterations
     let max_iter: u32 = 500;
+
     // the algorithm will stop running if:
     // `convergence_threshold < norm(current - previous) / norm(previous)`
     // where `current` is the output candidate for the current iteration,
@@ -75,13 +75,15 @@ fn main() {
     let convergence_threshold = 10_f64.powi(-10);
 
     // now we can call the denoising solver with the chosen variables
-    let denoised = solvers::denoise_multichannel(&img_matrices, lambda, tau, sigma, gamma, max_iter, convergence_threshold);
+    let denoised_array = image_array
+        .denoise(lambda, tau, sigma, gamma, max_iter, convergence_threshold)
+        .unwrap(); // will fail if image is 1 pixel in either x or y
 
     // we convert the solution into an RGB image format
-    let new_img = image::RgbImage::from_matrices(&denoised);
+    let denoised_img = denoised_array.into_rgb();
 
     // encode it and save it to a file
-    new_img.save("examples/result_images/angry_birb_denoised_multichannel.png")
+    new_img.save("examples/result_images/angry_birb_denoised.png")
         .expect("image could not be saved");
 }
 ```
@@ -90,7 +92,7 @@ This should provide the following result:
 
 Source image: | Output image:
 ---|---
-![source image, noisy](examples/source_images/angry_birb_noisy.png) | ![output image, denoised](examples/result_images/angry_birb_denoised_multichannel.png)
+![source image, noisy](examples/source_images/angry_birb_noisy.png) | ![output image, denoised](examples/result_images/angry_birb_denoised.png)
 
 ## Testing
 
@@ -106,7 +108,7 @@ Benchmarking can be run with `cargo bench`.
 
 Image recovery algorithms to implement:
 
-- [x] Denoising (single and multichannel variants)
+- [x] Denoising
 - [ ] Zooming
 - [ ] Deblurring
 - [ ] Dequantization
@@ -115,7 +117,7 @@ Image recovery algorithms to implement:
 
 ## Copyright
 
-This code is licensed under the GNU Affero General Public License version 3 or later. See [LICENSE](https://github.com/lily-mosquitoes/image-recovery/blob/main/LICENSE) or https://www.gnu.org/licenses/agpl-3.0.en.html.
+This code is licensed under the GNU Affero General Public License version 3 or later. See [LICENSE](https://github.com/lily-mosquitoes/image-recovery/blob/main/LICENSE) or [gnu.org/licenses/agpl-3.0.en.html](https://gnu.org/licenses/agpl-3.0.en.html).
 
 ## Acknowledgements
 
