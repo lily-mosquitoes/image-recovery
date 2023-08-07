@@ -106,3 +106,4 @@ mod solvers;
 
 pub use image;
 pub use image_array::ImageArray;
+pub use ndarray;

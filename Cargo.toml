@@ -1,6 +1,6 @@
 [package]
 name = "image-recovery"
-version = "0.2.10"
+version = "0.3.0"
 edition = "2021"
 authors = ["Lílian Ferreira de Freitas <lily.mosquitoes@gmail.com>", "Emilia L. K. Blåsten <emilia.blasten@iki.fi>"]
 description = "Image recovery algorithms, implemented in Rust."
