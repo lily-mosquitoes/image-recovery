@@ -20,7 +20,7 @@ Declare the dependency in you Cargo.toml
 
 ```toml
 [dependencies]
-image-recovery = "0.2"
+image-recovery = "0.3"
 ```
 
 ## Examples:
