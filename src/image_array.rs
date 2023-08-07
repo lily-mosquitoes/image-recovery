@@ -2,24 +2,34 @@ use std::ops::Deref;
 
 use image::{
     GrayImage,
+    Luma,
+    Rgb,
     RgbImage,
 };
 use ndarray::{
     Array,
-    Array2,
     Array3,
+    Axis,
     Dimension,
     RemoveAxis,
 };
 
-use crate::differentiable_array::DifferentiableArray;
+use crate::ops::{
+    Average,
+    Gradient,
+    Norm,
+    VectorLen,
+};
 
+/// An array representing an image, used with the solvers.
+/// The From trait is implemented for the types GrayImage and RgbImage in the
+/// [`image`](docs.rs/image/latest/image/) crate.
 #[derive(Debug)]
-pub struct ImageArray<T: DifferentiableArray> {
+pub struct ImageArray<T: Gradient + Average + VectorLen + Norm> {
     inner: T,
 }
 
-impl<T: DifferentiableArray> Deref for ImageArray<T> {
+impl<T: Gradient + Average + VectorLen + Norm> Deref for ImageArray<T> {
     type Target = T;
 
     fn deref(&self) -> &Self::Target {
@@ -27,14 +37,14 @@ impl<T: DifferentiableArray> Deref for ImageArray<T> {
     }
 }
 
-impl From<&GrayImage> for ImageArray<Array2<f64>> {
+impl From<&GrayImage> for ImageArray<Array3<f64>> {
     fn from(value: &GrayImage) -> Self {
-        let dim = (value.width() as usize, value.height() as usize);
-        let mut array = Array2::<f64>::zeros(dim);
+        let dim = (value.width() as usize, value.height() as usize, 1);
+        let mut array = Array3::<f64>::zeros(dim);
         for x in 0..dim.0 {
             for y in 0..dim.1 {
                 let pixel = value.get_pixel(x as u32, y as u32);
-                array[[x, y]] = pixel[0] as f64;
+                array[[x, y, 0]] = pixel[0] as f64;
             }
         }
 
@@ -69,6 +79,42 @@ impl<T: Copy + Into<f64>, D: Dimension + RemoveAxis> From<&Array<T, D>>
     }
 }
 
+impl ImageArray<Array3<f64>> {
+    /// Assumes Array3 axis 2 is colors, will flatten axis 2 if bigger than 1.
+    pub fn into_luma(&self) -> GrayImage {
+        let shape = self.shape();
+        let flat = self.map_axis(Axis(2), |v| v.sum() as u8);
+        let mut img = GrayImage::new(shape[0] as u32, shape[1] as u32);
+        for x in 0..shape[0] {
+            for y in 0..shape[1] {
+                let pixel = Luma([flat[[x, y]]]);
+                img.put_pixel(x as u32, y as u32, pixel);
+            }
+        }
+        img
+    }
+
+    /// Assumes Array3 axis 2 is colors, will use 3 first elements of axis 2 if
+    /// bigger than 3, or cycle through the elements if smaller than 3.
+    pub fn into_rgb(&self) -> RgbImage {
+        let shape = self.shape();
+        let flat = self.map_axis(Axis(2), |v| v.map(|&x| x as u8).to_vec());
+        let mut img = RgbImage::new(shape[0] as u32, shape[1] as u32);
+        for x in 0..shape[0] {
+            for y in 0..shape[1] {
+                let mut colors = flat[[x, y]].iter().cloned().cycle();
+                let pixel = Rgb([
+                    colors.next().unwrap(),
+                    colors.next().unwrap(),
+                    colors.next().unwrap(),
+                ]);
+                img.put_pixel(x as u32, y as u32, pixel);
+            }
+        }
+        img
+    }
+}
+
 #[cfg(test)]
 mod test {
     use image::{
@@ -77,15 +123,12 @@ mod test {
         Rgb,
         RgbImage,
     };
-    use ndarray::{
-        Array2,
-        Array3,
-    };
+    use ndarray::Array3;
     use pretty_assertions::assert_eq;
 
     use super::ImageArray;
 
-    fn get_gray_image(shape: (u32, u32)) -> GrayImage {
+    fn make_random_gray_image(shape: (u32, u32)) -> GrayImage {
         let mut img = GrayImage::new(shape.0, shape.1);
         for x in 0..shape.0 {
             for y in 0..shape.1 {
@@ -109,39 +152,18 @@ mod test {
 
     #[test]
     fn make_image_array_from_gray_image() {
-        let img = get_gray_image((10, 5));
+        let img = make_random_gray_image((10, 5));
 
         let array = ImageArray::from(&img);
 
-        let dim = (img.width() as usize, img.height() as usize);
-        let mut test_array = Array2::<f64>::zeros(dim);
+        let dim = (img.width() as usize, img.height() as usize, 1);
+        let mut test_array = Array3::<f64>::zeros(dim);
         for x in 0..dim.0 {
             for y in 0..dim.1 {
                 let pixel = img.get_pixel(x as u32, y as u32);
-                test_array[[x, y]] = pixel[0] as f64;
+                test_array[[x, y, 0]] = pixel[0] as f64;
             }
         }
-
-        assert_eq!(*array, test_array);
-    }
-
-    #[test]
-    fn make_image_array_from_array2_u8() {
-        let mut test_array = Array2::zeros((10, 5));
-        test_array.mapv_inplace(|_| rand::random::<u8>());
-        let array = ImageArray::from(&test_array);
-
-        let test_array = test_array.map(|&x| x as f64);
-
-        assert_eq!(*array, test_array);
-    }
-
-    #[test]
-    fn make_image_array_from_array2_f64() {
-        let mut test_array = Array2::zeros((10, 5));
-        test_array.mapv_inplace(|_| rand::random::<f64>());
-
-        let array = ImageArray::from(&test_array);
 
         assert_eq!(*array, test_array);
     }
@@ -186,5 +208,25 @@ mod test {
         let array = ImageArray::from(&test_array);
 
         assert_eq!(*array, test_array);
+    }
+
+    #[test]
+    fn make_gray_image_from_array3_f64() {
+        let test_img = make_random_gray_image((10, 5));
+
+        let array = ImageArray::from(&test_img);
+        let img = array.into_luma();
+
+        assert_eq!(img, test_img);
+    }
+
+    #[test]
+    fn make_rgb_image_from_array3_f64() {
+        let test_img = make_random_rgb_image((10, 5));
+
+        let array = ImageArray::from(&test_img);
+        let img = array.into_rgb();
+
+        assert_eq!(img, test_img);
     }
 }

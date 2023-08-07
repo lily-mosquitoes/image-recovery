@@ -4,3 +4,6 @@
 
 # development files
 /dev_*
+
+# MacOS files
+.DS_store

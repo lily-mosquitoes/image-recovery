@@ -36,19 +36,16 @@
 //! ```rust
 //! use image_recovery::{
 //!     image, // re-exported `image` crate
-//!     img::Manipulation, // trait for image::RgbImage manipulation
-//!     solvers, // module with image recovery algorithms
+//!     ImageArray, // struct for holding images
 //! };
 //!
 //! fn main() {
 //!     // the `image` crate provides functionality to decode images
 //!     let img = image::open("examples/source_images/angry_birb_noisy.png")
 //!         .expect("image could not be open")
-//!         .into_rgb8(); // the algorithms in this library are implemented for RGB images
-//!
-//!     // load the RGB image into an object which is composed
-//!     // of 3 matrices, one for each channel
-//!     let img_matrices = img.to_matrices();
+//!         .into_rgb8(); // the algorithms in this library are implemented for the Luma and Rgb types
+//!     // transform the RGB image into a 3D Array
+//!     let img_array = ImageArray::from(&img);
 //!
 //!     // choose inputs for the denoising solver:
 //!     // according to Chambolle, A. and Pock, T. (2011),
@@ -73,7 +70,7 @@
 //!
 //!     // choose bounds for denoising solver
 //!     // the algorithm will run for at most `max_iter` iterations
-//!     let max_iter: u32 = 500;
+//!     let max_iter: u32 = 100;
 //!     // the algorithm will stop running if:
 //!     // `convergence_threshold < norm(current - previous) / norm(previous)`
 //!     // where `current` is the output candidate for the current iteration,
@@ -81,13 +78,15 @@
 //!     let convergence_threshold = 10_f64.powi(-10);
 //!
 //!     // now we can call the denoising solver with the chosen variables
-//!     let denoised = solvers::denoise_multichannel(&img_matrices, lambda, tau, sigma, gamma, max_iter, convergence_threshold);
+//!     let denoised_array = img_array
+//!         .denoise(lambda, tau, sigma, gamma, max_iter, convergence_threshold)
+//!         .unwrap(); // will fail if image shape is 1 pixel in either x or y
 //!
 //!     // we convert the solution into an RGB image format
-//!     let new_img = image::RgbImage::from_matrices(&denoised);
+//!     let denoised_img = denoised_array.into_rgb();
 //!
 //!     // encode it and save it to a file
-//!     new_img.save("examples/result_images/angry_birb_denoised_multichannel.png")
+//!     denoised_img.save("examples/result_images/angry_birb_denoised.png")
 //!         .expect("image could not be saved");
 //! }
 //! ```
@@ -96,79 +95,14 @@
 //!
 //! Source image: | Output image:
 //! ---|---
-//! ![source image, noisy](https://github.com/lily-mosquitoes/image-recovery/raw/main/examples/source_images/angry_birb_noisy.png) | ![output image, denoised](https://github.com/lily-mosquitoes/image-recovery/raw/main/examples/result_images/angry_birb_denoised_multichannel.png)
+//! ![source image, noisy](https://github.com/lily-mosquitoes/image-recovery/raw/main/examples/source_images/angry_birb_noisy.png) | ![output image, denoised](https://github.com/lily-mosquitoes/image-recovery/raw/main/examples/result_images/angry_birb_denoised.png)
 
 #![feature(test)]
 extern crate test;
 
-mod _impl;
-pub mod array_ops;
-pub mod img;
-pub mod solvers;
-#[cfg(test)]
-mod tests;
-pub mod utils;
+mod image_array;
+mod ops;
+mod solvers;
 
 pub use image;
-pub use ndarray::Array2;
-
-/// struct representing an RGB image as 3 matrices,
-/// one for each color channel
-#[derive(Debug, Clone, PartialEq)]
-pub struct RgbMatrices {
-    pub shape: (usize, usize),
-    pub red: Array2<f64>,
-    pub green: Array2<f64>,
-    pub blue: Array2<f64>,
-}
-
-impl RgbMatrices {
-    /// generates a new `RgbMatrices` with all channels initialized to matrices of the given `shape`, but full of zeroes.
-    #[inline]
-    #[must_use]
-    pub fn new(shape: (usize, usize)) -> Self {
-        RgbMatrices {
-            shape,
-            red: Array2::<f64>::zeros(shape),
-            green: Array2::<f64>::zeros(shape),
-            blue: Array2::<f64>::zeros(shape),
-        }
-    }
-
-    // generates a new `RgbMatrices` from the given 3 matrices, each representing a color channel. Panics if their shapes aren't all the same.
-    #[must_use]
-    pub fn from_channels(red: &Array2<f64>, green: &Array2<f64>, blue: &Array2<f64>) -> Self {
-        let red_shape = red.raw_dim();
-        let green_shape = green.raw_dim();
-        let blue_shape = blue.raw_dim();
-
-        if !((red_shape == green_shape) && (red_shape == blue_shape)) {
-            panic!("arrays must be all of the same shape");
-        }
-
-        RgbMatrices {
-            shape: (red_shape[0], red_shape[1]),
-            red: red.to_owned(),
-            green: green.to_owned(),
-            blue: blue.to_owned(),
-        }
-    }
-
-    /// returns the sum of all elements in the `RgbMatrices`.
-    pub fn sum(&self) -> f64 {
-        (&self.red + &self.green + &self.blue).sum()
-    }
-
-    /// applies the given closure by calling `map(closure)` on each channel of the `RgbMatrices`. Useful for element-wise operations.
-    pub fn map<F>(&self, mut closure: F) -> RgbMatrices
-    where
-        F: FnMut(&f64) -> f64,
-    {
-        RgbMatrices {
-            shape: self.shape,
-            red: self.red.map(&mut closure),
-            green: self.green.map(&mut closure),
-            blue: self.blue.map(&mut closure),
-        }
-    }
-}
+pub use image_array::ImageArray;

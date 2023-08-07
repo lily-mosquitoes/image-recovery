@@ -1,19 +1,17 @@
 use image_recovery::{
-    image, // re-exported `image` crate
-    RgbMatrices, // struct holding 3 matrices representing an RGB image
-    img::Manipulation, // trait for image::RgbImage manipulation
-    solvers, // module with image recovery algorithms
+    image,      // re-exported `image` crate
+    ImageArray, // struct for holding images
 };
 
 fn main() {
     // the `image` crate provides functionality to decode images
     let img = image::open("examples/source_images/angry_birb_noisy.png")
         .expect("image could not be open")
-        .into_rgb8(); // the algorithms in this library are implemented for RGB images
+        .into_rgb8(); // the algorithms in this library are implemented for the Luma and Rgb
+                      // types
 
-    // load the RGB image into an object which is composed
-    // of 3 matrices, one for each channel
-    let img_matrices = img.to_matrices();
+    // transform the RGB image into a 3D Array
+    let image_array = ImageArray::from(&img);
 
     // choose inputs for the denoising solver:
     // according to Chambolle, A. and Pock, T. (2011),
@@ -47,19 +45,15 @@ fn main() {
     let convergence_threshold = 10_f64.powi(-10);
 
     // now we can call the denoising solver with the chosen variables
-    // for each channel
-    let denoised_red = solvers::denoise(&img_matrices.red, lambda, tau, sigma, gamma, max_iter, convergence_threshold);
-    let denoised_green = solvers::denoise(&img_matrices.green, lambda, tau, sigma, gamma, max_iter, convergence_threshold);
-    let denoised_blue = solvers::denoise(&img_matrices.blue, lambda, tau, sigma, gamma, max_iter, convergence_threshold);
-
-    // we unite the solutions into a single object representing
-    // a single RGB image as matrices
-    let denoised = RgbMatrices::from_channels(&denoised_red, &denoised_green, &denoised_blue);
+    let denoised_array = image_array
+        .denoise(lambda, tau, sigma, gamma, max_iter, convergence_threshold)
+        .unwrap(); // will fail if image shape is 1 pixel in either x or y
 
     // we convert the solution into an RGB image format
-    let new_img = image::RgbImage::from_matrices(&denoised);
+    let denoised_img = denoised_array.into_rgb();
 
     // encode it and save it to a file
-    new_img.save("examples/result_images/angry_birb_denoised_each_channel.png")
+    denoised_img
+        .save("examples/result_images/angry_birb_denoised.png")
         .expect("image could not be saved");
 }
